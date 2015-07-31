@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>SVG控制颜色变化</title>
+		<script type="text/javascript" src="js/jquery-1.11.2.js"></script>
+		<script type="text/javascript" src="js/AnimationMC.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+	</head>
+
+	<body>
+		<svg width="500" height="300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 500 300" xml:space="preserve">
+			<defs>
+				<linearGradient id="background" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="0%" y2="100%">
+					<stop id="one" offset="0%" stop-color="RGB(255,0,0)" />
+					<stop id="two" offset="100%" stop-color="RGB(250,250,250)" />
+				</linearGradient>
+			</defs>
+
+			<rect width="500" height="300" fill="url(#background)" stroke="2" />
+
+		</svg>
+
+		
+		<input type="button" onclick="cl()" />
+
+	</body>
+<script>
+			var col1 = $("#one").zdw_initColor([{'fr1': ["5,7,12"]}, {'fr50': ["170,185,217"]},{'fr100': ["228,233,243"]},{'fr150': ["213,253,255"]}], 150)
+			var col2 = $("#two").zdw_initColor([{'fr1': ["56,78,124"]}, {'fr50': ["61,113,175"]},{'fr100': ["136,172,215"]},{'fr150': ["86,208,254"]}], 150)
+			 console.log(col1)
+			 
+			upFrame()
+
+			function upFrame() {
+				col1.updataAnimation()
+				col2.updataAnimation()
+				tweenID = setTimeout(function() {
+					requestID = requestAnimationFrame(upFrame);
+				}, 1000 / 25);
+			}
+			
+			
+			
+			window.onmousemove = function(e){
+				col1.gotoAndStop(Math.ceil((e.clientX/document.body.clientWidth)*150))
+				col2.gotoAndStop(Math.ceil((e.clientX/document.body.clientWidth)*150))
+			}
+			
+			
+			
+			function cl(){
+				col1.fromAndtoPlay(150,1)
+				col2.fromAndtoPlay(150,1)
+			}
+			
+			
+		</script>
+
+</html>
