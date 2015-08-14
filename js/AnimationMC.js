@@ -57,7 +57,7 @@
 					guanjian_framedata.push(guanjian_framedata[guanjian_framedata.length - 1])
 				}
 			}
-
+			curDom.isGetOpactiy = isGetopactiy();
 			createData();
 
 			//开始计算每个数组中数据的间隔
@@ -67,6 +67,18 @@
 					add_KEY_FRAMES(i, i + 1);
 				}
 			}
+
+			function isGetopactiy(){
+
+				if(guanjian_framedata[0].length>6){
+					return true
+				}else{
+					return false
+				}
+			}
+
+
+
 
 
 			//向KEY_FRAMES对象中添加start到end的全部matrix数据
@@ -80,7 +92,13 @@
 				var inc3 = (last[3] - first[3]) / totframe;
 				var inc4 = (last[4] - first[4]) / totframe;
 				var inc5 = (last[5] - first[5]) / totframe;
-
+				
+				var alpha7 = 0;
+				
+				if(last[6]!=undefined&&last[6]!=null){
+					 alpha7 = (last[6] - first[6]) / totframe;
+				}
+				
 				for (var i = 0; i < totframe - 1; i++) {
 					var arr = [];
 					arr[0] = first[0] + (inc0 * i);
@@ -89,14 +107,34 @@
 					arr[3] = first[3] + (inc3 * i);
 					arr[4] = first[4] + (inc4 * i);
 					arr[5] = first[5] + (inc5 * i);
+					if(curDom.isGetOpactiy){
+						var alp = first[6] + (alpha7 * i);
+						curDom.dataframe['alp' + (i + 1 + guanjian_frame[start])] = alp;
+					//	console.log(alp)
+					}
+					
 					curDom.dataframe['fr' + (i + 1 + guanjian_frame[start])] = 'matrix(' + arr.join(' ') + ')';
+					
 					//	console.log((i + 1+guanjian_frame[start]))
 				}
-				curDom.dataframe['fr' + guanjian_frame[start]] = 'matrix(' + first.join(' ') + ')';
-				curDom.dataframe['fr' + guanjian_frame[end]] = 'matrix(' + last.join(' ') + ')';
+				curDom.dataframe['fr' + guanjian_frame[start]] = 'matrix(' + first[0]+","+first[1]+","+first[2]+","+first[3]+","+first[4]+","+first[5]+ ')';
+				curDom.dataframe['fr' + guanjian_frame[end]] = 'matrix(' + last[0]+","+last[1]+","+last[2]+","+last[3]+","+last[4]+","+last[5] + ')';
+				
+				if(curDom.isGetOpactiy){
+					curDom.dataframe['alp' + guanjian_frame[start]] = first[6];
+					curDom.dataframe['alp' + guanjian_frame[end]] = last[6];
+				}
+				
 			}
 			curDom.playAnimation = function(cur){
-				$(curDom).attr("transform",curDom.dataframe["fr"+cur])
+				$(curDom).attr("transform",curDom.dataframe["fr"+cur]);
+
+				if(curDom.isGetOpactiy){
+					//alert("1")
+					$(curDom).css({"opacity":curDom.dataframe["alp"+cur]})
+				}else{
+					//alert("2")
+				}
 			}
 
 			curDom.playAnimation(curDom.curFrame)
@@ -222,7 +260,7 @@
 				var last = guanjian_framedata[end];
 				var totframe = guanjian_frame[end] - guanjian_frame[start] + 1
 		
-				console.log(totframe)
+				//console.log(totframe)
 				
 				var firstnum10 = first[0].split(",")
 				var lastnum10 = last[0].split(",")
@@ -230,7 +268,7 @@
 				var jiangeg = (lastnum10[1]-firstnum10[1])/totframe;
 				var jiangeb = (lastnum10[2]-firstnum10[2])/totframe;
 				
-				console.log(jianger+"++++++++++++++++++++")
+			//	console.log(jianger+"++++++++++++++++++++")
 
 				for (var i = 0; i < totframe - 1; i++) {
 					var arrr =0;
@@ -239,7 +277,7 @@
 					arrr = (parseInt(firstnum10[0])+Math.round(parseFloat(jianger) * i));
 					arrg = parseInt(firstnum10[1])+Math.round(parseFloat(jiangeg) * i)
 					arrb = parseInt(firstnum10[2])+Math.round(parseFloat(jiangeb) * i)
-					console.log(parseInt(firstnum10[0])+"-----"+Math.round(parseFloat(jianger) * i)+"-------"+i)
+				//	console.log(parseInt(firstnum10[0])+"-----"+Math.round(parseFloat(jianger) * i)+"-------"+i)
 					curDom.dataframe['fr' + (i + 1 + guanjian_frame[start])] = "RGB("+arrr+","+arrg+","+arrb+")";
 						//console.log("RGB("+arrr,arrg,arrb+")")
 				}
@@ -247,9 +285,9 @@
 				curDom.dataframe['fr' + guanjian_frame[end]] = "RGB("+last[0]+")";
 			}
 			curDom.playAnimation = function(cur){
-				console.log(curDom.dataframe["fr"+cur],cur)
+				//console.log(curDom.dataframe["fr"+cur],cur)
 				$(curDom).css("stop-color",curDom.dataframe["fr"+cur])
-				console.log($(curDom).css("stop-color"))
+				//console.log($(curDom).css("stop-color"))
 			}
 
 			curDom.playAnimation(curDom.curFrame)
